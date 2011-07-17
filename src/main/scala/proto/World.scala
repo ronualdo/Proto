@@ -2,7 +2,7 @@ package proto
 
 import scala.collection.mutable.ArrayBuffer
 
-class World(val renderer: Renderer) {
+class World {
   private var currentTurn = 0
   private val elements = ArrayBuffer[Proto]()
 
@@ -12,13 +12,12 @@ class World(val renderer: Renderer) {
     elements += proto
   }
 
+  def renderUsing(renderer: Renderer) {
+    elements.foreach (renderer.render(_))
+  }
+
   def executeNewCycle() {
-    elements.foreach {
-      (proto) => {
-        renderer.render(proto)
-        proto.live
-      }
-    }
+    elements.foreach (_.live)
     currentTurn+=1
   }
 }

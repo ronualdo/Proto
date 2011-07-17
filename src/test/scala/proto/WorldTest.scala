@@ -13,7 +13,7 @@ class WorldTest extends FixtureWordSpec
   "A world" should {
     "increment his turn by 1 after executing one cycle" in {
       mockCycle => import mockCycle._
-      val world = new World(null)
+      val world = new World
       val initialTurn = world.turn
       world.executeNewCycle
 
@@ -21,7 +21,7 @@ class WorldTest extends FixtureWordSpec
     }
   }
 
-  "render all contained elements during a world cycle" in {
+  "render all elements in the world" in {
     mockCycle => import mockCycle._
 
     val renderer = mock[Renderer]
@@ -34,10 +34,10 @@ class WorldTest extends FixtureWordSpec
     }
 
     whenExecuting {
-      val world = new World(renderer)
+      val world = new World
       world.add(proto1)
       world.add(proto2)
-      world.executeNewCycle
+      world.renderUsing(renderer)
     }
   }
   
@@ -52,7 +52,7 @@ class WorldTest extends FixtureWordSpec
     }
 
     whenExecuting {
-      val world = new World(renderer)
+      val world = new World
       world.add(proto)
       world.executeNewCycle
     }
