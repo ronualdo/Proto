@@ -13,7 +13,7 @@ class WorldTest extends FixtureWordSpec
   "A world" should {
     "increment his turn by 1 after executing one cycle" in {
       mockCycle => import mockCycle._
-      val world = new World
+      val world = new World(initialOxigenAmmount=1000)
       val initialTurn = world.turn
       world.executeNewCycle
 
@@ -25,8 +25,8 @@ class WorldTest extends FixtureWordSpec
     mockCycle => import mockCycle._
 
     val renderer = mock[Renderer]
-    val proto1 = new Proto
-    val proto2 = new Proto
+    val proto1 = new Proto(oxigenCost=100)
+    val proto2 = new Proto(oxigenCost=100)
 
     expecting { expectation => import expectation._
       oneOf (renderer).render(proto1)
@@ -34,7 +34,7 @@ class WorldTest extends FixtureWordSpec
     }
 
     whenExecuting {
-      val world = new World
+      val world = new World(initialOxigenAmmount=1000)
       world.add(proto1)
       world.add(proto2)
       world.renderUsing(renderer)
@@ -43,19 +43,32 @@ class WorldTest extends FixtureWordSpec
   
   "make all protos live during a world cycle" in {
     mockCycle => import mockCycle._
-    val renderer = mock[Renderer]
     val proto = mock[Proto]
 
     expecting { expectation => import expectation._
-      allowing (renderer).render(proto)
-      oneOf(proto).live
+      oneOf (proto).live
+      allowing (proto).oxigenCost
     }
 
     whenExecuting {
-      val world = new World
+      val world = new World(initialOxigenAmmount=1000)
       world.add(proto)
       world.executeNewCycle
     }
   }
+  
+  "should decrease his amount of oxigen by the amount of oxigen consumed by the protos" in {
+    mockCycle => import mockCycle._
+    val proto1 = new Proto(oxigenCost=100)
+    val proto2 = new Proto(oxigenCost=50)
 
+    val world = new World(initialOxigenAmmount=1000)
+
+    world.add(proto1)
+    world.add(proto2)
+
+    world.executeNewCycle
+
+    world.oxigen should equal (850)
+  }
 }

@@ -23,6 +23,7 @@ class GameTest extends FixtureWordSpec
         val game = new Game(world)
         game.start
         Thread.sleep(300)
+        game.stop
       }
     }
   }
