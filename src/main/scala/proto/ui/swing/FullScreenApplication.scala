@@ -9,7 +9,7 @@ abstract class FullScreenApplication
   
   val screenDevice = localGraphicsEnvironment.getDefaultScreenDevice
   
-  def top: UndecoratedFrame
+  def top: Frame
 
   override def startup(args: Array[String]) {
     val mainFrame = top
