@@ -22,7 +22,7 @@ abstract class FullScreenApplication
   }
 
   override def shutdown() {
-    println("shudown")
+    println("shutdown")
     screenDevice.setFullScreenWindow(null)
   }
 
