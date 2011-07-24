@@ -23,7 +23,7 @@ class World(initialOxigenAmmount: Int) {
     val oxigenConsumed = elements.foldLeft(0) {
       (oxigen: Int, proto: Proto) => {
         proto.live
-        oxigen + proto.oxigenCost
+        oxigen + proto.oxigenUse
       }
     }
 

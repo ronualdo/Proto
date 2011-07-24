@@ -11,20 +11,16 @@ class GameFrame extends DirectRenderingFrame
     with Undecorated 
     with Renderer {
   
-  val game = new Game(new World(1000), this)
+  implicit def proto2SwingProto(proto: Proto) = new SwingProto(proto)
+  
   background = Color.BLACK
 
-  override def visible_=(visible: Boolean) {
-    super.visible = true
-    game.start
-  }
-
   def render(proto: Proto) {
-    println("rendering")
+    renderGraphics(proto.drawFunction)
   }
 
   def show() {
-    println("showing")
+    paintScreen
   }
 
 }

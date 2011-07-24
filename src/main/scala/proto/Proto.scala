@@ -1,7 +1,8 @@
 package proto
 
-class Proto(val oxigenCost: Int) {
+class Proto() {
   private var energyValue: Int = 0
+  val oxigenUse = 10
 
   def energy = energyValue
 

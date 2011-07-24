@@ -25,8 +25,8 @@ class WorldTest extends FixtureWordSpec
     mockCycle => import mockCycle._
 
     val renderer = mock[Renderer]
-    val proto1 = new Proto(oxigenCost=100)
-    val proto2 = new Proto(oxigenCost=100)
+    val proto1 = new Proto
+    val proto2 = new Proto
 
     expecting { expectation => import expectation._
       oneOf (renderer).render(proto1)
@@ -47,7 +47,7 @@ class WorldTest extends FixtureWordSpec
 
     expecting { expectation => import expectation._
       oneOf (proto).live
-      allowing (proto).oxigenCost
+      allowing (proto).oxigenUse
     }
 
     whenExecuting {
@@ -59,16 +59,18 @@ class WorldTest extends FixtureWordSpec
   
   "should decrease his amount of oxigen by the amount of oxigen consumed by the protos" in {
     mockCycle => import mockCycle._
-    val proto1 = new Proto(oxigenCost=100)
-    val proto2 = new Proto(oxigenCost=50)
-
+    val proto1 = new Proto
+    val proto2 = new Proto
     val world = new World(initialOxigenAmmount=1000)
-
+    
+    val expectedOxigenAmmount = world.oxigen - 
+        (proto1.oxigenUse + proto2.oxigenUse)
+    
     world.add(proto1)
     world.add(proto2)
 
     world.executeNewCycle
 
-    world.oxigen should equal (850)
+    world.oxigen should equal (expectedOxigenAmmount)
   }
 }
