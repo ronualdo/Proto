@@ -3,12 +3,13 @@ package proto.ui.swing
 import scala.swing._
 
 class DirectRenderingFrame extends MainFrame {
+  peer.setIgnoreRepaint(true)
 
   def renderGraphics(draw: (Graphics2D) => Unit) {
     val context = borderlessGraphicContext
     draw(context)
     context.dispose
-  } 
+  }
 
   def paintScreen() {
     bufferStrategy filter (_.contentsLost) map (_.show)
@@ -16,7 +17,9 @@ class DirectRenderingFrame extends MainFrame {
 
   override def visible_=(visible: Boolean) {
     super.visible = visible
-    if (visible) peer.createBufferStrategy(2)
+    if (visible) {
+      peer.createBufferStrategy(2)
+    }
   }
   
   private def borderlessGraphicContext = {

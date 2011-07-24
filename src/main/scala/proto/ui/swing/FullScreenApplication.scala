@@ -19,10 +19,10 @@ abstract class FullScreenApplication
     } catch {
       case e: Exception => shutdown
     }
+    mainFrame.visible = true
   }
 
   override def shutdown() {
-    println("shutdown")
     screenDevice.setFullScreenWindow(null)
   }
 
