@@ -11,7 +11,7 @@ class DirectRenderingFrame extends MainFrame {
   } 
 
   def paintScreen() {
-    if (bufferStrategy.contentsLost) bufferStrategy.show  
+    bufferStrategy filter (_.contentsLost) map (_.show)
   }
 
   override def visible_=(visible: Boolean) {
@@ -20,7 +20,11 @@ class DirectRenderingFrame extends MainFrame {
   }
   
   private def borderlessGraphicContext = {
-    val graphicContext = bufferStrategy.getDrawGraphics
+    val graphicContext = bufferStrategy match {
+      case None => throw new IllegalStateException("BufferStrategy not set")
+      case Some(strategy) => strategy.getDrawGraphics
+    }
+
     val borderlessGraphicContext = graphicContext
         .create(peer.getInsets().right, peer.getInsets().top,
             peer.getWidth() - peer.getInsets().left,
@@ -29,6 +33,9 @@ class DirectRenderingFrame extends MainFrame {
     borderlessGraphicContext.asInstanceOf[Graphics2D]
   }
 
-  private def bufferStrategy = peer.getBufferStrategy
+  private def bufferStrategy = peer.getBufferStrategy match {
+    case null => None
+    case strategy => Some(peer.getBufferStrategy)
+  }
 
 }
