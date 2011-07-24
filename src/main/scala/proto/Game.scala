@@ -11,7 +11,7 @@ class Game(val world: World, val renderer: Renderer) {
       world.executeNewCycle
       world.renderUsing (renderer)
       wait(100)
-      react {
+      reactWithin(100) {
         case 'execute => start
         case 'stop => println("quiting")
       }
@@ -19,6 +19,7 @@ class Game(val world: World, val renderer: Renderer) {
   }
   
   private def wait(time: Int) {
+    println("waiting")
     actor {
       Thread.sleep(time)
       gameCycleActor ! 'execute
