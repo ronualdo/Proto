@@ -3,7 +3,11 @@ package proto
 import scala.actors.Actor
 import scala.actors.Actor._
 
-class Game(private val world: World, private val renderer: Renderer) {
+class Game (
+  private val world: World, 
+  private val renderer: Renderer
+) 
+{
   private var gameCycleActor: Actor = _
 
   def start() {

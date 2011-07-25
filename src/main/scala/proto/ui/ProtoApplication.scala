@@ -10,7 +10,7 @@ import proto.{Game, Proto, World}
 object ProtoApplication extends FullScreenApplication {
   val gameFrame = new GameFrame
   val world = new World(1000)
-  world.add(new Proto)
+  world.add(new Proto(size=(10,10)))
   val game = new Game(world, gameFrame)
 
   def top = gameFrame
