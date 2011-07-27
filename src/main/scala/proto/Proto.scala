@@ -14,10 +14,13 @@ class Proto(
   def position(): Tuple2[Int, Int] = currentPosition
 
   def live() {
+    val (x, y) = currentPosition
+    move((x, y+1))
     energyValue-=1
   }
 
   def move(position: Tuple2[Int, Int]) {
+    println("moving"+ position)
     currentPosition = position
   }
 }

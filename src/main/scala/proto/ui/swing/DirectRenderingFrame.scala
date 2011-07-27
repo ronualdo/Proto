@@ -8,7 +8,7 @@ class DirectRenderingFrame extends MainFrame {
   def renderGraphics(draw: (Graphics2D) => Unit) {
     val context = borderlessGraphicContext
     draw(context)
-    //context.dispose
+    context.dispose
   }
 
   def paintScreen() {
@@ -33,7 +33,7 @@ class DirectRenderingFrame extends MainFrame {
         .create(peer.getInsets().right, peer.getInsets().top,
             peer.getWidth() - peer.getInsets().left,
             peer.getHeight() - peer.getInsets().bottom)
-    //graphicContext.dispose
+    graphicContext.dispose
     borderlessGraphicContext.asInstanceOf[Graphics2D]
   }
 
