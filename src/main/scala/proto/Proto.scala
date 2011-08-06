@@ -7,6 +7,7 @@ class Proto(
 { 
   private var energyValue: Int = 0
   private var currentPosition = position
+  val metabolismCost = 10
   val oxigenUse = 10
 
   def energy = energyValue
@@ -14,13 +15,10 @@ class Proto(
   def position(): Tuple2[Int, Int] = currentPosition
 
   def live() {
-    val (x, y) = currentPosition
-    move((x, y+1))
-    energyValue-=1
+    energyValue-=metabolismCost
   }
 
   def move(position: Tuple2[Int, Int]) {
-    println("moving"+ position)
     currentPosition = position
   }
 }
