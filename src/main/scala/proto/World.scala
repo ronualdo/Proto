@@ -20,15 +20,22 @@ class World(initialOxigenAmmount: Int) {
   }
 
   def executeNewCycle() {
-    val oxigenConsumed = elements.foldLeft(0) {
-      (oxigen: Int, proto: Proto) => {
-        proto.live
-        oxigen + proto.oxigenUse
-      }
+    elements.foreach(_.live)
+    currentTurn+=1
+  }
+
+  def extractOxigen(ammountExtracted: Int) = {
+    if(ammountExtracted < 0) 
+      throw new IllegalArgumentException("tried to extract "+ ammountExtracted)
+
+    val oxigenExtracted = if (ammountExtracted > oxigenAmmount) {
+      oxigenAmmount
+    } else {
+      ammountExtracted
     }
 
-    oxigenAmmount -= oxigenConsumed
-    currentTurn+=1
+    oxigenAmmount -= oxigenExtracted
+    oxigenExtracted
   }
 
 }

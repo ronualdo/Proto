@@ -1,24 +1,24 @@
 package proto
 
 class Proto(
-  size: Tuple2[Int, Int], 
-  position: Tuple2[Int, Int] = (0,0)
-)
-{ 
-  private var energyValue: Int = 0
-  private var currentPosition = position
-  val metabolismCost = 10
-  val oxigenUse = 10
+  brain: Brain,
+  world: World, 
+  _position: Tuple2[Int, Int] = (0,0)
+) 
+{
+  private var currentXPosition = _position._1
+  private var currentYPosition = _position._2
 
-  def energy = energyValue
+  val oxigenUse = 0 
+  
+  def position() = (currentXPosition, currentYPosition)
 
-  def position(): Tuple2[Int, Int] = currentPosition
-
-  def live() {
-    energyValue-=metabolismCost
-  }
-
-  def move(position: Tuple2[Int, Int]) {
-    currentPosition = position
+  def live {
+    world.extractOxigen(oxigenUse)
+    brain.process() match {
+      case Stop() =>
+      case MoveNorth(speed) => currentYPosition += speed
+      case _ => 
+    }
   }
 }
