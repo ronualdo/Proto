@@ -11,8 +11,7 @@ class WorldTest extends FixtureWordSpec
     with ShouldMatchers {
     
   "A world" should {
-    "increment his turn by 1 after executing one cycle" in {
-      mockCycle => import mockCycle._
+    "increment his turn by 1 after executing one cycle" in { () =>
       val world = new World(initialOxigenAmmount=1000)
       val initialTurn = world.turn
       world.executeNewCycle
@@ -57,8 +56,7 @@ class WorldTest extends FixtureWordSpec
     }
   }
   
-  "should decrease his amount of oxigen by the amount of oxigen consumed by the protos" in {
-    mockCycle => import mockCycle._
+  "should decrease his amount of oxigen by the amount of oxigen consumed by the protos" in { () =>
     val proto1 = new Proto(size=(10,10))
     val proto2 = new Proto(size=(10,10))
     val world = new World(initialOxigenAmmount=1000)
