@@ -29,6 +29,8 @@ class ProtoTest extends FixtureWordSpec
   }
 
   "A proto" when {
+    val movingSpeed = 3
+
     "following his brain order to stand still" should {
       
       val standingBrain = new Brain {
@@ -56,7 +58,7 @@ class ProtoTest extends FixtureWordSpec
     "following his brain order to move north" should {
       
       val northMovingBrain = new Brain {
-        def process(signs: Int*) = MoveNorth(3)
+        def process(signs: Int*) = MoveNorth(movingSpeed)
       }
 
       "increment his y position" in {
@@ -65,7 +67,7 @@ class ProtoTest extends FixtureWordSpec
         val world = mock[World]
         val initialPosition = (10, 5)
         val proto = new Proto(northMovingBrain, world, initialPosition)
-        val expectedPosition = (initialPosition._1, initialPosition._2+3)
+        val expectedPosition = (initialPosition._1, initialPosition._2 + movingSpeed)
 
         expecting { expectation => import expectation._
           ignoring(world)
@@ -74,6 +76,79 @@ class ProtoTest extends FixtureWordSpec
         whenExecuting {
           proto.live
           proto.position should equal (expectedPosition) 
+        }
+      }
+    }
+
+    "following his brain order to move south" should {
+      val southMovingBrain = new Brain {
+        def process(signs: Int*) = MoveSouth(movingSpeed)
+      }
+      
+      "decrement his y position" in {
+        mockCycle => import mockCycle._
+
+        val world = mock[World]
+        val initialPosition = (10, 5)
+        val proto = new Proto(southMovingBrain, world, initialPosition)
+        val expectedPosition = (initialPosition._1, initialPosition._2 - movingSpeed)
+
+        expecting { expectation => import expectation._
+          ignoring(world)
+        }
+
+        whenExecuting {
+          proto.live
+          proto.position should equal (expectedPosition)
+        }
+      }
+
+    }
+
+    "following his brain order to move east" should {
+      val eastMovingBrain = new Brain {
+        def process(signs: Int*) = MoveEast(movingSpeed)
+      }
+
+      "increment his x position" in {
+        mockCycle => import mockCycle._
+
+        val world = mock[World]
+        val initialPosition = (10, 5)
+        val proto = new Proto(eastMovingBrain, world, initialPosition)
+        val expectedPosition = (initialPosition._1 + movingSpeed, initialPosition._2)
+
+        expecting { expectation => import expectation._
+          ignoring(world)
+        }
+
+        whenExecuting {
+          proto.live
+          proto.position should equal (expectedPosition)
+        }
+      }
+    }
+
+    "following his brain order to move west" should {
+      val westMovingBrain = new Brain {
+        def process(signs: Int*) = MoveWest(movingSpeed)
+      }
+
+      "decrement his x position" in {
+        mockCycle => import mockCycle._
+
+        val world = mock[World]
+        val initialPosition = (10, 5)
+        val proto = new Proto(westMovingBrain, world, initialPosition)
+        val expectedPosition = (initialPosition._1 - movingSpeed, initialPosition._2)
+
+        expecting { expectation => import expectation._
+          ignoring(world)
+        }
+
+        whenExecuting {
+          proto.live
+          proto.position should equal (expectedPosition)
         }
       }
     }

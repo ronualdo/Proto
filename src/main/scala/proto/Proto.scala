@@ -18,6 +18,9 @@ class Proto(
     brain.process() match {
       case Stop() =>
       case MoveNorth(speed) => currentYPosition += speed
+      case MoveSouth(speed) => currentYPosition -= speed
+      case MoveEast(speed) => currentXPosition += speed
+      case MoveWest(speed) => currentXPosition -= speed
       case _ => 
     }
   }
