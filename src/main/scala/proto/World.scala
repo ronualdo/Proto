@@ -2,11 +2,18 @@ package proto
 
 import scala.collection.mutable.ArrayBuffer
 
-class World(initialOxigenAmmount: Int) {
+class World(
+  initialOxigenAmmount: Int,
+  size: Tuple2[Int, Int]
+) 
+{
   private var oxigenAmmount = initialOxigenAmmount
   private var currentTurn = 0
   private val elements = ArrayBuffer[Proto]()
-
+  
+  val width = size._1
+  val height = size._2
+  
   def turn = currentTurn
 
   def oxigen = oxigenAmmount

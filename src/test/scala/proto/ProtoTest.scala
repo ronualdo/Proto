@@ -5,6 +5,7 @@ import org.scalatest.mock.{JMockCycleFixture, JMockExpectations}
 import org.scalatest.matchers.ShouldMatchers
 
 import org.jmock.{Expectations, Mockery}
+import org.jmock.Expectations.returnValue
 
 class ProtoTest extends FixtureWordSpec 
     with JMockCycleFixture
@@ -61,13 +62,13 @@ class ProtoTest extends FixtureWordSpec
         def process(signs: Int*) = MoveNorth(movingSpeed)
       }
 
-      "increment his y position" in {
+      "decrement his y position" in {
         mockCycle => import mockCycle._
 
         val world = mock[World]
         val initialPosition = (10, 5)
         val proto = new Proto(northMovingBrain, world, initialPosition)
-        val expectedPosition = (initialPosition._1, initialPosition._2 + movingSpeed)
+        val expectedPosition = (initialPosition._1, initialPosition._2 - movingSpeed)
 
         expecting { expectation => import expectation._
           ignoring(world)
@@ -78,22 +79,61 @@ class ProtoTest extends FixtureWordSpec
           proto.position should equal (expectedPosition) 
         }
       }
+
+      "not exceed the worlds top border" in {
+        mockCycle => import mockCycle._
+
+        val world = mock[World]
+        val initialPosition = (10, 2)
+        val proto = new Proto(northMovingBrain, world, initialPosition)
+
+        expecting { expectation => import expectation._
+          ignoring(world)
+        }
+
+        whenExecuting {
+          proto.live
+          proto.position should equal ((10, 0))
+        }
+      }
     }
 
     "following his brain order to move south" should {
       val southMovingBrain = new Brain {
         def process(signs: Int*) = MoveSouth(movingSpeed)
       }
+
+      val worldHeight = 600
       
-      "decrement his y position" in {
+      "increment his y position" in {
         mockCycle => import mockCycle._
 
         val world = mock[World]
         val initialPosition = (10, 5)
         val proto = new Proto(southMovingBrain, world, initialPosition)
-        val expectedPosition = (initialPosition._1, initialPosition._2 - movingSpeed)
+        val expectedPosition = (initialPosition._1, initialPosition._2 + movingSpeed)
 
         expecting { expectation => import expectation._
+          allowing (world).height; will(returnValue(worldHeight))
+          ignoring(world)
+        }
+
+        whenExecuting {
+          proto.live
+          proto.position should equal (expectedPosition)
+        }
+      }
+
+      "not exceed the worlds bottom border" in {
+        mockCycle => import mockCycle._
+
+        val world = mock[World]
+        val initialPosition = (10, 599)
+        val proto = new Proto(southMovingBrain, world, initialPosition)
+        val expectedPosition = (initialPosition._1, worldHeight)
+
+        expecting { expectation => import expectation._
+          allowing (world).height; will(returnValue(worldHeight))
           ignoring(world)
         }
 
@@ -109,6 +149,8 @@ class ProtoTest extends FixtureWordSpec
       val eastMovingBrain = new Brain {
         def process(signs: Int*) = MoveEast(movingSpeed)
       }
+      
+      val worldWidth = 800
 
       "increment his x position" in {
         mockCycle => import mockCycle._
@@ -119,6 +161,26 @@ class ProtoTest extends FixtureWordSpec
         val expectedPosition = (initialPosition._1 + movingSpeed, initialPosition._2)
 
         expecting { expectation => import expectation._
+          allowing (world).width; will(returnValue(worldWidth))
+          ignoring(world)
+        }
+
+        whenExecuting {
+          proto.live
+          proto.position should equal (expectedPosition)
+        }
+      }
+
+      "not exceed the worlds right border" in {
+        mockCycle => import mockCycle._
+
+        val world = mock[World]
+        val initialPosition = (799, 10)
+        val proto = new Proto(eastMovingBrain, world, initialPosition)
+        val expectedPosition = (worldWidth, initialPosition._2)
+
+        expecting { expectation => import expectation._
+          allowing (world).width; will(returnValue(worldWidth))
           ignoring(world)
         }
 
@@ -141,6 +203,24 @@ class ProtoTest extends FixtureWordSpec
         val initialPosition = (10, 5)
         val proto = new Proto(westMovingBrain, world, initialPosition)
         val expectedPosition = (initialPosition._1 - movingSpeed, initialPosition._2)
+
+        expecting { expectation => import expectation._
+          ignoring(world)
+        }
+
+        whenExecuting {
+          proto.live
+          proto.position should equal (expectedPosition)
+        }
+      }
+
+      "not exceed worlds left border" in {
+        mockCycle => import mockCycle._
+
+        val world = mock[World]
+        val initialPosition = (1, 10)
+        val proto = new Proto(westMovingBrain, world, initialPosition)
+        val expectedPosition = (0, initialPosition._2)
 
         expecting { expectation => import expectation._
           ignoring(world)
