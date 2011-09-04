@@ -3,15 +3,13 @@ package proto
 class Proto(
   brain: Brain,
   world: World, 
-  _position: Tuple2[Int, Int] = (0,0)
+  _position: PlaneCoordinates
 ) 
 {
-  private var currentXPosition = _position._1
-  private var currentYPosition = _position._2
 
   val oxigenUse = 0 
-  
-  def position() = (currentXPosition, currentYPosition)
+
+  private var currentPosition = _position
 
   def live {
     world.extractOxigen(oxigenUse)
@@ -25,37 +23,22 @@ class Proto(
     }
   }
 
+  def position() = currentPosition
+
   private def moveNorth(speed: Int) {
-    currentYPosition = decrementPosition(currentYPosition, speed)
+    currentPosition = currentPosition.decrementY(speed)
   }
 
   private def moveSouth(speed: Int) {
-    currentYPosition = limitedIncrementPosition(currentYPosition, speed, world.height)
+    currentPosition = currentPosition.incrementY(speed)
   }
 
   private def moveEast(speed: Int) {
-    currentXPosition = limitedIncrementPosition(currentXPosition, speed, world.width)
+    currentPosition = currentPosition.incrementX(speed)
   }
 
   private def moveWest(speed: Int) {
-    currentXPosition = decrementPosition(currentXPosition, speed)
+    currentPosition = currentPosition.decrementX(speed)
   }
 
-  private def limitedIncrementPosition(position: Int, speed: Int, limit: Int) = {
-    val newPosition = position + speed
-    
-    if (newPosition > limit) {
-      limit
-    } else {
-      newPosition
-    }
-  }
-
-  private def decrementPosition(position: Int, speed: Int) = {
-    if(position > speed) {
-      position - speed
-    } else {
-      0
-    }
-  }
 }

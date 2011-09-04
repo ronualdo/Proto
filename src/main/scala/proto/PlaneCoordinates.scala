@@ -1,6 +1,6 @@
 package proto
 
-class Position(x: Int, y: Int, maxXValue: Int, maxYValue: Int) {
+class PlaneCoordinates(x: Int, y: Int, maxXValue: Int, maxYValue: Int) {
   
   val xCoordinate = new Coordinate(x, maxXValue)
   val yCoordinate = new Coordinate(y, maxYValue)
@@ -39,32 +39,32 @@ class Position(x: Int, y: Int, maxXValue: Int, maxYValue: Int) {
   def incrementX(incrementValue: Int) = {
     val newXCoordinate = xCoordinate + incrementValue
 
-    new Position(newXCoordinate.value, yCoordinate.value, maxXValue, maxYValue) 
+    new PlaneCoordinates(newXCoordinate.value, yCoordinate.value, maxXValue, maxYValue) 
   }
 
   def incrementY(incrementValue: Int) = {
     val newYCoordinate = yCoordinate + incrementValue
 
-    new Position(xCoordinate.value, newYCoordinate.value, maxXValue, maxYValue)
+    new PlaneCoordinates(xCoordinate.value, newYCoordinate.value, maxXValue, maxYValue)
   }
 
   def decrementX(decrementValue: Int) = {
     val newXCoordinate = xCoordinate - decrementValue
 
-    new Position(newXCoordinate.value, yCoordinate.value, maxXValue, maxYValue) 
+    new PlaneCoordinates(newXCoordinate.value, yCoordinate.value, maxXValue, maxYValue) 
   }
 
   def decrementY(decrementValue: Int) = {
     val newYCoordinate = yCoordinate - decrementValue
 
-    new Position(xCoordinate.value, newYCoordinate.value, maxXValue, maxYValue)
+    new PlaneCoordinates(xCoordinate.value, newYCoordinate.value, maxXValue, maxYValue)
   }
 
   override def toString() = xCoordinate + "," + yCoordinate 
 
   override def equals(position: Any) = {
-    if(position.isInstanceOf[Position]) {
-      val p = position.asInstanceOf[Position]
+    if(position.isInstanceOf[PlaneCoordinates]) {
+      val p = position.asInstanceOf[PlaneCoordinates]
       
       xCoordinate == p.xCoordinate && yCoordinate == p.yCoordinate
     } else {
