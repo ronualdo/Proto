@@ -2,11 +2,18 @@ package proto
 
 import scala.collection.mutable.ArrayBuffer
 
-class World(initialOxigenAmmount: Int) {
+class World(
+  initialOxigenAmmount: Int,
+  size: Tuple2[Int, Int]
+) 
+{
   private var oxigenAmmount = initialOxigenAmmount
   private var currentTurn = 0
   private val elements = ArrayBuffer[Proto]()
-
+  
+  val width = size._1
+  val height = size._2
+  
   def turn = currentTurn
 
   def oxigen = oxigenAmmount
@@ -20,15 +27,22 @@ class World(initialOxigenAmmount: Int) {
   }
 
   def executeNewCycle() {
-    val oxigenConsumed = elements.foldLeft(0) {
-      (oxigen: Int, proto: Proto) => {
-        proto.live
-        oxigen + proto.oxigenUse
-      }
+    elements.foreach(_.live)
+    currentTurn+=1
+  }
+
+  def extractOxigen(ammountExtracted: Int) = {
+    if(ammountExtracted < 0) 
+      throw new IllegalArgumentException("tried to extract "+ ammountExtracted)
+
+    val oxigenExtracted = if (ammountExtracted > oxigenAmmount) {
+      oxigenAmmount
+    } else {
+      ammountExtracted
     }
 
-    oxigenAmmount -= oxigenConsumed
-    currentTurn+=1
+    oxigenAmmount -= oxigenExtracted
+    oxigenExtracted
   }
 
 }

@@ -11,8 +11,9 @@ class WorldTest extends FixtureWordSpec
     with ShouldMatchers {
     
   "A world" should {
-    "increment his turn by 1 after executing one cycle" in { () =>
-      val world = new World(initialOxigenAmmount=1000)
+    "increment his turn by 1 after executing one cycle" in {
+      mockCycle => import mockCycle._
+      val world = new World(initialOxigenAmmount=1000, (800, 600))
       val initialTurn = world.turn
       world.executeNewCycle
 
@@ -24,18 +25,15 @@ class WorldTest extends FixtureWordSpec
     mockCycle => import mockCycle._
 
     val renderer = mock[Renderer]
-    val proto1 = new Proto(size=(10,10))
-    val proto2 = new Proto(size=(10,10))
+    val proto1 = mock[Proto]
 
     expecting { expectation => import expectation._
       oneOf (renderer).render(proto1)
-      oneOf (renderer).render(proto2)
     }
 
     whenExecuting {
-      val world = new World(initialOxigenAmmount=1000)
+      val world = new World(initialOxigenAmmount=1000, (800, 600))
       world.add(proto1)
-      world.add(proto2)
       world.renderUsing(renderer)
     }
   }
@@ -50,25 +48,37 @@ class WorldTest extends FixtureWordSpec
     }
 
     whenExecuting {
-      val world = new World(initialOxigenAmmount=1000)
+      val world = new World(initialOxigenAmmount=1000, (800, 600))
       world.add(proto)
       world.executeNewCycle
     }
   }
   
-  "should decrease his amount of oxigen by the amount of oxigen consumed by the protos" in { () =>
-    val proto1 = new Proto(size=(10,10))
-    val proto2 = new Proto(size=(10,10))
-    val world = new World(initialOxigenAmmount=1000)
-    
-    val expectedOxigenAmmount = world.oxigen - 
-        (proto1.oxigenUse + proto2.oxigenUse)
-    
-    world.add(proto1)
-    world.add(proto2)
+  "extract the same ammount of oxigen passed as parameter when the amount is <= the worlds oxigen" in { () =>
+    val initialOxigenAmmount = 1000
+    val world = new World(initialOxigenAmmount, (800, 600))
+    val oxigenConsumed = 1000
 
-    world.executeNewCycle
-
-    world.oxigen should equal (expectedOxigenAmmount)
+    val oxigenExtracted = world.extractOxigen(oxigenConsumed)
+    oxigenExtracted should equal (oxigenConsumed)
+    world.oxigen should equal (initialOxigenAmmount - oxigenExtracted)
   }
+
+  "extract only the worlds oxigen ammount when the oxigen passed as argument is > the worlds oxigen ammount" in { () =>
+    val initialOxigenAmmount = 1000
+    val world = new World(initialOxigenAmmount, (800, 600))
+    val oxigenConsumed = 1200
+
+    val oxigenExtracted = world.extractOxigen(oxigenConsumed)
+    oxigenExtracted should equal (initialOxigenAmmount)
+    world.oxigen should equal (0)
+  }
+
+  "not be able to extract negative ammounts" in { () =>
+    val initialOxigenAmmount = 1000
+    val world = new World(initialOxigenAmmount, (800, 600))
+
+    evaluating { world.extractOxigen(-1) } should produce[IllegalArgumentException]
+  }
+
 }

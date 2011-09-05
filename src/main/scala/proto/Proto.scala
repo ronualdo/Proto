@@ -1,26 +1,44 @@
 package proto
 
 class Proto(
-  size: Tuple2[Int, Int], 
-  position: Tuple2[Int, Int] = (0,0)
-)
-{ 
-  private var energyValue: Int = 0
-  private var currentPosition = position
-  val oxigenUse = 10
+  brain: Brain,
+  world: World, 
+  _position: PlaneCoordinates
+) 
+{
 
-  def energy = energyValue
+  val oxigenUse = 0 
 
-  def position(): Tuple2[Int, Int] = currentPosition
+  private var currentPosition = _position
 
-  def live() {
-    val (x, y) = currentPosition
-    move((x, y+1))
-    energyValue-=1
+  def live {
+    world.extractOxigen(oxigenUse)
+    brain.process() match {
+      case Stop() =>
+      case MoveNorth(speed) => moveNorth(speed)
+      case MoveSouth(speed) => moveSouth(speed)
+      case MoveEast(speed) => moveEast(speed)
+      case MoveWest(speed) => moveWest(speed)
+      case _ => 
+    }
   }
 
-  def move(position: Tuple2[Int, Int]) {
-    println("moving"+ position)
-    currentPosition = position
+  def position() = currentPosition
+
+  private def moveNorth(speed: Int) {
+    currentPosition = currentPosition.decrementY(speed)
   }
+
+  private def moveSouth(speed: Int) {
+    currentPosition = currentPosition.incrementY(speed)
+  }
+
+  private def moveEast(speed: Int) {
+    currentPosition = currentPosition.incrementX(speed)
+  }
+
+  private def moveWest(speed: Int) {
+    currentPosition = currentPosition.decrementX(speed)
+  }
+
 }

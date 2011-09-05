@@ -10,9 +10,8 @@ class GameTest extends FixtureWordSpec
     with JMockCycleFixture
     with ShouldMatchers {
   
-  "World" should { 
-    """render, run a new world cycle and show the rendered 
-    |result every 100 milisseconds""" in {
+  "Game" should { 
+    "render, run a new world cycle and show rendered result every 100 milisseconds" in {
       mockCycle => import mockCycle._
       val world = mock[World]
       val renderer = mock[Renderer]
