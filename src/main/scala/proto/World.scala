@@ -3,11 +3,13 @@ package proto
 import scala.collection.mutable.ArrayBuffer
 
 class World(
-  initialOxigenAmmount: Int,
+  initialOxigenAmmount: Int = 0,
+  initialCO2Ammount: Int = 0,
   size: Tuple2[Int, Int]
 ) 
 {
   private var oxigenAmmount = initialOxigenAmmount
+  private var co2Ammount = initialCO2Ammount
   private var currentTurn = 0
   private val elements = ArrayBuffer[Proto]()
   
@@ -17,6 +19,8 @@ class World(
   def turn = currentTurn
 
   def oxigen = oxigenAmmount
+
+  def co2 = co2Ammount
 
   def add(proto: Proto) {
     elements += proto
@@ -32,17 +36,28 @@ class World(
   }
 
   def extractOxigen(ammountExtracted: Int) = {
-    if(ammountExtracted < 0) 
-      throw new IllegalArgumentException("tried to extract "+ ammountExtracted)
-
-    val oxigenExtracted = if (ammountExtracted > oxigenAmmount) {
-      oxigenAmmount
-    } else {
-      ammountExtracted
-    }
-
-    oxigenAmmount -= oxigenExtracted
-    oxigenExtracted
+    val availableAmmount = calculateAvailableAmmount(oxigenAmmount, ammountExtracted)
+    oxigenAmmount -= availableAmmount
+    availableAmmount
   }
 
+  def extractCO2(ammountExtracted: Int) = {
+    val availableAmmount = calculateAvailableAmmount(co2Ammount, ammountExtracted)
+    co2Ammount -= availableAmmount
+    availableAmmount
+  }
+
+  private def calculateAvailableAmmount(source: Int, ammount: Int) = {
+    if(ammount < 0) {
+      throw new IllegalArgumentException("tried to extract "+ammount)
+    }
+
+    val ammountExtracted = if (ammount > source) {
+      source
+    } else {
+      ammount
+    }
+
+    ammountExtracted
+  }
 }

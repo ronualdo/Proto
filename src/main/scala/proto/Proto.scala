@@ -1,18 +1,18 @@
 package proto
 
-class Proto(
+abstract class Proto(
   brain: Brain,
   world: World, 
   _position: PlaneCoordinates
-) 
+)
 {
-
-  val oxigenUse = 0 
 
   private var currentPosition = _position
 
+  val oxigenUse = 0
+
   def live {
-    world.extractOxigen(oxigenUse)
+    breathe()
     brain.process() match {
       case Stop() =>
       case MoveNorth(speed) => moveNorth(speed)
@@ -24,6 +24,10 @@ class Proto(
   }
 
   def position() = currentPosition
+
+  def breathe(): Unit
+
+  def energy(): Int
 
   private def moveNorth(speed: Int) {
     currentPosition = currentPosition.decrementY(speed)

@@ -11,25 +11,6 @@ class ProtoTest extends FixtureWordSpec
     with JMockCycleFixture
     with ShouldMatchers {
 
-  "A proto" should {
-    "extract from the world the oxigen consumed" in {
-      mockCycle => import mockCycle._
-      val world = mock[World]
-      val brain = mock[Brain]
-      val position = new PlaneCoordinates(0, 0, 100, 100)
-      val proto = new Proto(brain, world, position)
-
-      expecting { expectation => import expectation._
-        ignoring(brain)
-        oneOf (world).extractOxigen(proto.oxigenUse)
-      }
-
-      whenExecuting {
-        proto.live
-      }
-    }
-  }
-
   "A proto" when {
     val movingSpeed = 3
 
@@ -44,7 +25,15 @@ class ProtoTest extends FixtureWordSpec
         
         val world = mock[World]
         val initialPosition = new PlaneCoordinates(10, 10, 100, 100)
-        val proto = new Proto(standingBrain, world, initialPosition)
+        val proto = new Proto(standingBrain, world, initialPosition) {
+          override def breathe() {
+            //empty method
+          }
+
+          override def energy() = {
+            0
+          }
+        }
         
         expecting { expectation => import expectation._
           ignoring(world)
@@ -68,7 +57,10 @@ class ProtoTest extends FixtureWordSpec
 
         val world = mock[World]
         val initialPosition = new PlaneCoordinates(10, 5, 100, 100)
-        val proto = new Proto(northMovingBrain, world, initialPosition)
+        val proto = new Proto(northMovingBrain, world, initialPosition){
+          override def breathe() {}
+          override def energy() = {0}
+        }
 
         expecting { expectation => import expectation._
           ignoring(world)
@@ -93,7 +85,10 @@ class ProtoTest extends FixtureWordSpec
 
         val world = mock[World]
         val initialPosition = new PlaneCoordinates(10, 5, 100, 100)
-        val proto = new Proto(southMovingBrain, world, initialPosition)
+        val proto = new Proto(southMovingBrain, world, initialPosition) {
+          override def breathe() {}
+          override def energy() = {0}
+        }
 
         expecting { expectation => import expectation._
           allowing (world).height; will(returnValue(worldHeight))
@@ -119,7 +114,10 @@ class ProtoTest extends FixtureWordSpec
 
         val world = mock[World]
         val initialPosition = new PlaneCoordinates(10, 5, 100, worldWidth)
-        val proto = new Proto(eastMovingBrain, world, initialPosition)
+        val proto = new Proto(eastMovingBrain, world, initialPosition) {
+          override def breathe() {}
+          override def energy() = {0}
+        }
 
         expecting { expectation => import expectation._
           allowing (world).width; will(returnValue(worldWidth))
@@ -143,7 +141,10 @@ class ProtoTest extends FixtureWordSpec
 
         val world = mock[World]
         val initialPosition = new PlaneCoordinates(10, 5, 100, 100)
-        val proto = new Proto(westMovingBrain, world, initialPosition)
+        val proto = new Proto(westMovingBrain, world, initialPosition) {
+          override def breathe() {}
+          override def energy() = {0}
+        }
 
         expecting { expectation => import expectation._
           ignoring(world)
