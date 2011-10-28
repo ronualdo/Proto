@@ -27,9 +27,30 @@ class AutotrophicTest extends FixtureWordSpec
 
         whenExecuting {
           val proto = new AutotrophicProto(brain, world, initialPosition, protoCO2Use)
-          val expectedEnergy = proto.energy + protoCO2Use / 4
+          val expectedEnergy = proto.energy + protoCO2Use / 6
           proto.live
           proto.energy should equal (expectedEnergy)
+        }
+      }
+
+      "should produce O2 proportional to the CO2 consumed after living" in {
+        mockCycle => import mockCycle._
+        
+        val initialOxigenAmmount = 100
+        val world = new World(initialOxigenAmmount, initialCO2Ammount=1000, size=(800, 600))
+        val protoCO2Use = 8
+        val brain = mock[Brain]
+        val initialPosition = new PlaneCoordinates(0, 0, 100, 100)
+
+        expecting { expectation => import expectation._
+          ignoring(brain)
+        }
+
+        whenExecuting {
+          val expectedO2 = initialOxigenAmmount + protoCO2Use/6
+          val proto = new AutotrophicProto(brain, world, initialPosition, protoCO2Use)
+          proto.live
+          world.oxigen should equal (expectedO2)
         }
       }
     }
@@ -50,7 +71,7 @@ class AutotrophicTest extends FixtureWordSpec
 
         whenExecuting {
           val proto = new AutotrophicProto(brain, world, initialPosition, protoCO2Use)
-          val expectedEnergy = proto.energy + initialCO2Ammount/4
+          val expectedEnergy = proto.energy + initialCO2Ammount/6
           proto.live
           proto.energy should equal (expectedEnergy)
         }

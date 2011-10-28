@@ -60,4 +60,18 @@ class World(
 
     ammountExtracted
   }
+
+  def increaseOxigenBy(ammount: Int) {
+    if(ammount < 0) {
+      throw new IllegalArgumentException("tried to increase by "+ ammount)
+    }
+    oxigenAmmount += ammount
+  }
+
+  def increaseCO2By(ammount: Int) {
+    if(ammount < 0) {
+      throw new IllegalArgumentException("tried to increase by "+ ammount)
+    }
+    co2Ammount += ammount
+  }
 }

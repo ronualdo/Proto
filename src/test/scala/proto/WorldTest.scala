@@ -108,4 +108,31 @@ class WorldTest extends FixtureWordSpec
     evaluating { world.extractCO2(-1) } should produce[IllegalArgumentException]
   }
 
+  "be able to increase his oxigen ammount" in { () =>
+    val initialOxigenAmmount = 1000
+    val world = new World(initialOxigenAmmount, 0, (800, 600))
+    world.increaseOxigenBy(100)
+
+    world.oxigen should equal (initialOxigenAmmount+100)
+  }
+
+  "not be able to increase his oxigen ammount by a negative ammount" in { () =>
+    val world = new World(size=(800, 600))
+
+    evaluating { world.increaseOxigenBy(-1) } should produce[IllegalArgumentException]
+  }
+
+  "be able to increase his co2 ammount" in { () =>
+    val initialCO2Ammount = 1000
+    val world = new World(0, initialCO2Ammount, (800, 600))
+    world.increaseCO2By(100)
+
+    world.co2 should equal (initialCO2Ammount + 100)
+  }
+
+  "not be able to increase his co2 ammount by a negative ammount" in { () => 
+    val world = new World(size=(800, 600))
+
+    evaluating { world.increaseCO2By(-1) } should produce[IllegalArgumentException]
+  }
 }

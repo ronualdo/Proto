@@ -13,12 +13,14 @@ class AutotrophicProto (
 
   override def breathe() {
     val co2Extracted = world.extractCO2(co2Use)
-    val (energyProduced, o2) = processCO2(co2Extracted)
+    val (energyProduced, o2Produced) = processCO2(co2Extracted)
     currentEnergy += energyProduced
+    world.increaseOxigenBy(o2Produced)
   }
 
   private def processCO2(co2Consumed: Int): Tuple2[Int, Int] = {
-    val energyProduced = co2Consumed / 4
-    (energyProduced, 0)
+    val energyProduced = co2Consumed / 6
+    val oxigenProduced = energyProduced
+    (energyProduced, oxigenProduced)
   }
 }
