@@ -5,6 +5,7 @@ import org.scalatest.mock.{JMockCycleFixture, JMockExpectations}
 import org.scalatest.matchers.ShouldMatchers
 
 import proto.domain.World
+import proto.domain.entity.Proto
 
 import org.jmock.{Expectations, Mockery}
 

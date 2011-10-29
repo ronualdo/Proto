@@ -1,4 +1,4 @@
-package proto
+package proto.domain.entity
 
 abstract class Proto {
 
