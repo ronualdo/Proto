@@ -44,7 +44,6 @@ class WorldTest extends FixtureWordSpec
 
     expecting { expectation => import expectation._
       oneOf (proto).live
-      allowing (proto).oxigenUse
     }
 
     whenExecuting {
@@ -134,5 +133,14 @@ class WorldTest extends FixtureWordSpec
     val world = new World(size=(800, 600))
 
     evaluating { world.increaseCO2By(-1) } should produce[IllegalArgumentException]
+  }
+
+  "be able to return an valid position" in { () =>
+    val world = new World(size=(800, 600))
+
+    val position = world position(10, 5)
+
+    position.x should equal (10)
+    position.y should equal (5)
   }
 }

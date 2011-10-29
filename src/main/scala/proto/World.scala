@@ -74,4 +74,36 @@ class World(
     }
     co2Ammount += ammount
   }
+
+  def position(x: Int, y: Int) = {
+    val xCoordinate = new Coordinate(x, width)
+    val yCoordinate = new Coordinate(y, height)
+    new Position(xCoordinate, yCoordinate)
+  }
+
+  class Position(xCoordinate: Coordinate, yCoordinate: Coordinate) {
+
+    def x = xCoordinate.value
+    def y = yCoordinate.value
+    
+    def incrementXBy(number: Int) = {
+      val newX = xCoordinate+number
+      new Position(newX, yCoordinate)
+    }
+
+    def incrementYBy(number: Int) = {
+      val newY = yCoordinate+number
+      new Position(xCoordinate, newY)
+    }
+
+    def decrementXBy(number: Int) = {
+      val newX = xCoordinate-number
+      new Position(newX, yCoordinate)
+    }
+
+    def decrementYBy(number: Int) = {
+      val newY = yCoordinate-number
+      new Position(xCoordinate, newY)
+    }
+  }
 }
