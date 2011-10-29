@@ -1,4 +1,6 @@
-package proto
+package proto.domain
+
+import proto.{Proto, Renderer}
 
 import scala.collection.mutable.ArrayBuffer
 

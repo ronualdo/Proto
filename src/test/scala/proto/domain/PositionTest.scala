@@ -1,5 +1,7 @@
 package proto
 
+import proto.domain.World
+
 import org.scalatest.WordSpec
 import org.scalatest.matchers.ShouldMatchers
 
@@ -54,7 +56,7 @@ class PositionTest extends WordSpec
         val position = world position(100, 10)
 
         val result = position decrementYBy 100
-
+        
         result.y should equal (0)
       }
 

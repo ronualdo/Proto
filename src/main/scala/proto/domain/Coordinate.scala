@@ -1,4 +1,4 @@
-package proto
+package proto.domain
 
 class Coordinate(val value: Int, maxValue: Int) {
   

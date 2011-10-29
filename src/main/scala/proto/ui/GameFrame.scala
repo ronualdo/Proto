@@ -4,7 +4,8 @@ import java.awt.Color
 
 import scala.swing.RichWindow.Undecorated
 
-import proto.{Game, Proto, Renderer, World}
+import proto.{Game, Proto, Renderer}
+import proto.domain.World
 import proto.ui.swing.DirectRenderingFrame
 
 class GameFrame extends DirectRenderingFrame 

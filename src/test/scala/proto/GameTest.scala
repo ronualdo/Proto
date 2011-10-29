@@ -4,6 +4,8 @@ import org.scalatest.fixture.FixtureWordSpec
 import org.scalatest.mock.{JMockCycleFixture, JMockExpectations}
 import org.scalatest.matchers.ShouldMatchers
 
+import proto.domain.World
+
 import org.jmock.{Expectations, Mockery}
 
 class GameTest extends FixtureWordSpec
