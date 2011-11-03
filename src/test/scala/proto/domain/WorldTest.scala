@@ -41,12 +41,12 @@ class WorldTest extends FixtureWordSpec
     }
   }
   
-  "make all protos live during a world cycle" in {
+  "make all protos metabolize during a world cycle" in {
     mockCycle => import mockCycle._
     val proto = mock[Proto]
 
     expecting { expectation => import expectation._
-      oneOf (proto).live
+      oneOf (proto).metabolize
     }
 
     whenExecuting {

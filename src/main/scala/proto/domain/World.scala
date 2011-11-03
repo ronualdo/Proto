@@ -34,7 +34,7 @@ class World(
   }
 
   def executeNewCycle() {
-    elements.foreach(_.live)
+    elements.foreach(_.metabolize)
     currentTurn+=1
   }
 

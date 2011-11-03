@@ -15,12 +15,12 @@ class AutrotrophicProtoTest extends FixtureWordSpec
 
   "An autrophic proto" should {
     
-    "consum world co2 after living" in {
+    "consum world co2 after metabolize" in {
       mockCycle => import mockCycle._
       
       val world = mock[World]
       val co2Cost = 20
-      val proto = new AutotrophicProto(world, co2Cost)
+      val proto = new AutotrophicProto(world, 10, co2Cost)
 
       expecting { expectation => import expectation._
         oneOf (world).extractCO2(co2Cost)
@@ -28,7 +28,7 @@ class AutrotrophicProtoTest extends FixtureWordSpec
       }
 
       whenExecuting {
-        proto.live
+        proto.metabolize
       }
     }
   }
@@ -38,7 +38,7 @@ class AutrotrophicProtoTest extends FixtureWordSpec
 
     val world = mock[World]
     val co2Extracted = 10
-    val proto = new AutotrophicProto(world, 20)
+    val proto = new AutotrophicProto(world, 10, 20)
 
     expecting { expectation => import expectation._
       oneOf (world).extractCO2(20); will(returnValue(co2Extracted))
@@ -46,7 +46,7 @@ class AutrotrophicProtoTest extends FixtureWordSpec
     }
 
     whenExecuting {
-      proto.live
+      proto.metabolize
     }
   }
 
@@ -55,7 +55,7 @@ class AutrotrophicProtoTest extends FixtureWordSpec
 
     val world = mock[World]
     val co2Extracted = 20
-    val proto = new AutotrophicProto(world, 30)
+    val proto = new AutotrophicProto(world, 0, 30)
     val initialEnergy = proto.energy
     val expectedEnergyProduced = co2Extracted / 6
 
@@ -65,7 +65,7 @@ class AutrotrophicProtoTest extends FixtureWordSpec
     }
 
     whenExecuting {
-      proto.live
+      proto.metabolize
     }
 
     proto.energy should equal (initialEnergy + expectedEnergyProduced)
