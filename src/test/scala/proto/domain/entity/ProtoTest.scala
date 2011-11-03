@@ -39,5 +39,15 @@ class ProtoTest extends FixtureWordSpec
 
       proto.energy should equal (energyProduced-metabolismCost)  
     }
+
+    "should die if energy is 0 or less after metabolizing" in { () =>
+      val proto = new Proto(100) {
+        def breathe() = 0
+      }
+
+      proto.metabolize
+
+      proto.isAlive should equal (false)
+    }
   }
 }

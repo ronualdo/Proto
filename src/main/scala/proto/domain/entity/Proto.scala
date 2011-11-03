@@ -14,4 +14,6 @@ abstract class Proto(baseMetabolismCost: Int) {
 
   def breathe(): Int
 
+  def isAlive = currentEnergy > 0
+
 }
