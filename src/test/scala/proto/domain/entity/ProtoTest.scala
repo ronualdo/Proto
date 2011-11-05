@@ -11,43 +11,126 @@ class ProtoTest extends FixtureWordSpec
     with JMockCycleFixture
     with ShouldMatchers {
 
-  "A proto" should {
-    "decrement its energy by its metabolism cost after metabolizing" in { () =>
-      val metabolismCost = 10
-      
-      val proto = new Proto(metabolismCost) {
-        def breathe() = 0
+  "A proto" when {
+    "alive" should {
+      "decrement its energy by its metabolism cost after metabolizing" in { () =>
+        val metabolismCost = 10
+        val initialEnergy = 10
+        val proto = new Proto(
+          initialHealth=0,
+          maxHealth=100,
+          recoverySpeed=1,
+          initialEnergy, 
+          metabolismCost
+        ) {
+          def breath = 0
+        }
+
+        proto.metabolize
+
+        proto.energy should equal (initialEnergy - metabolismCost)
       }
 
-      val initialEnergy = proto.energy
 
-      proto.metabolize
+      "breathe to produce energy during metabolizing" in { () =>
+        val metabolismCost = 10
+        val energyProduced = 25
+        val initialEnergy = 10
 
-      proto.energy should equal (initialEnergy - metabolismCost)
+        val proto = new Proto(
+          initialHealth = 0,
+          maxHealth = 100,
+          recoverySpeed = 1,
+          initialEnergy, 
+          metabolismCost
+        ) {
+          def breath() = energyProduced
+        }
+
+        proto.metabolize
+
+        proto.energy should equal (initialEnergy+energyProduced-metabolismCost)  
+      }
+
+      "decrement its health by the diference when metabolismCost is greater then actual energy" in { () =>
+        val metabolismCost = 30
+        val energy = 5
+        val initialHealth = 10
+
+        val proto = new Proto(
+          initialHealth = initialHealth,
+          maxHealth = 10,
+          recoverySpeed = 1,
+          initialEnergy = energy, 
+          baseMetabolismCost = metabolismCost
+        ) {
+          def breath() = 0
+        }
+
+        proto.metabolize
+
+        proto.health should equal( initialHealth + (energy-metabolismCost))
+      }
+
+      "increment its health by recoverySpeed after metabolizing" in {  () =>
+        val recoverySpeed = 2
+        val maxHealth = 5
+        val initialHealth = 1
+
+        val proto = new Proto(
+            initialHealth,
+            maxHealth,
+            recoverySpeed,
+            initialEnergy = 100, 
+            baseMetabolismCost = 0
+        ) {
+          def breath = 100
+        }
+
+        proto.metabolize
+
+        proto.health should equal (initialHealth + recoverySpeed)
+      }
     }
+  }
 
-    "breathe to produce energy during metabolizing" in {
-      mockCycle => import mockCycle._
-      val metabolismCost = 10
-      val energyProduced = 25
-      
-      val proto = new Proto(metabolismCost) {
-        def breathe() = energyProduced
+  "A proto" when {
+    "not alive" should {
+      "not breathe to produce energy after metabolizing" in { () =>
+        val proto = new Proto(
+          initialHealth = 0,
+          maxHealth = 100,
+          recoverySpeed = 1,
+          initialEnergy = 0,
+          baseMetabolismCost = 0
+        ) {
+          def breath = 100
+
+          override def isAlive = false
+        }
+
+        proto.metabolize
+
+        proto.energy should equal (0)
       }
 
-      proto.metabolize
+      "not decrement its energy after metabolizing" in { () =>
+        val proto = new Proto(
+          initialHealth = 0,
+          maxHealth = 0,
+          recoverySpeed = 1,
+          initialEnergy = 0,
+          baseMetabolismCost = 100
+        ) {
+          def breath = 100
 
-      proto.energy should equal (energyProduced-metabolismCost)  
-    }
+          override def isAlive = false
+        }
 
-    "should die if energy is 0 or less after metabolizing" in { () =>
-      val proto = new Proto(100) {
-        def breathe() = 0
+        proto.metabolize
+
+        proto.energy should equal (0)
       }
-
-      proto.metabolize
-
-      proto.isAlive should equal (false)
     }
   }
 }
