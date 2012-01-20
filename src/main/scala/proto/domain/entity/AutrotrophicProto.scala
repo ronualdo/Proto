@@ -4,14 +4,12 @@ import proto.domain.World
 
 class AutotrophicProto(
   world: World,
-  initialHealth: Int,
-  maxHealth: Int,
-  recoverySpeed: Int,
+  health: Health,
   initialEnergy: Int, 
   baseMetabolismCost: Int, 
   co2Cost: Int
 ) 
-extends Proto(initialHealth, maxHealth, recoverySpeed, initialEnergy, baseMetabolismCost) {
+extends Proto(health, initialEnergy, baseMetabolismCost) {
 
   def breath() = {
     val co2Extracted = world extractCO2 co2Cost

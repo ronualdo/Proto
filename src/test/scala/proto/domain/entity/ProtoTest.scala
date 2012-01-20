@@ -11,15 +11,29 @@ class ProtoTest extends FixtureWordSpec
     with JMockCycleFixture
     with ShouldMatchers {
 
+  "A proto" should {
+    "be alive when his health is greater then 0" in { () =>
+      val proto = new Proto(
+        _health = new Health(_value=100, maxValue=100, recoverySpeed=1),
+        _energy=0,
+        baseMetabolismCost=0
+      ) {
+        def breath = 100
+      }
+
+      proto.metabolize
+
+      proto.isAlive should equal (true)
+    }
+  }
+
   "A proto" when {
     "alive" should {
       "decrement its energy by its metabolism cost after metabolizing" in { () =>
         val metabolismCost = 10
         val initialEnergy = 10
         val proto = new Proto(
-          initialHealth=0,
-          maxHealth=100,
-          recoverySpeed=1,
+          new Health(_value=100, maxValue=100, recoverySpeed=1),
           initialEnergy, 
           metabolismCost
         ) {
@@ -38,9 +52,7 @@ class ProtoTest extends FixtureWordSpec
         val initialEnergy = 10
 
         val proto = new Proto(
-          initialHealth = 0,
-          maxHealth = 100,
-          recoverySpeed = 1,
+          new Health(_value=10, maxValue=10, recoverySpeed=1),
           initialEnergy, 
           metabolismCost
         ) {
@@ -55,13 +67,11 @@ class ProtoTest extends FixtureWordSpec
       "decrement its health by the diference when metabolismCost is greater then actual energy" in { () =>
         val metabolismCost = 30
         val energy = 5
-        val initialHealth = 10
+        val initialHealth = 100
 
         val proto = new Proto(
-          initialHealth = initialHealth,
-          maxHealth = 10,
-          recoverySpeed = 1,
-          initialEnergy = energy, 
+          new Health(_value=initialHealth, maxValue=100, recoverySpeed=1),
+          _energy = energy, 
           baseMetabolismCost = metabolismCost
         ) {
           def breath() = 0
@@ -74,14 +84,17 @@ class ProtoTest extends FixtureWordSpec
 
       "increment its health by recoverySpeed after metabolizing" in {  () =>
         val recoverySpeed = 2
-        val maxHealth = 5
         val initialHealth = 1
 
+        val protoHealth = new Health(
+          _value = initialHealth,
+          maxValue = 5,
+          recoverySpeed = recoverySpeed
+        )
+
         val proto = new Proto(
-            initialHealth,
-            maxHealth,
-            recoverySpeed,
-            initialEnergy = 100, 
+            _health = protoHealth,    
+            _energy = 100, 
             baseMetabolismCost = 0
         ) {
           def breath = 100
@@ -91,6 +104,20 @@ class ProtoTest extends FixtureWordSpec
 
         proto.health should equal (initialHealth + recoverySpeed)
       }
+
+      "not have his energy decremented to a negative number after metabolizing" in { () =>
+        val proto = new Proto(
+          _health = new Health(_value=100, maxValue=100, recoverySpeed=100),
+          _energy=0,
+          baseMetabolismCost=100
+        ) {
+          def breath = 0
+        }
+
+        proto.metabolize
+
+        proto.energy should equal (0)
+      }
     }
   }
 
@@ -98,10 +125,8 @@ class ProtoTest extends FixtureWordSpec
     "not alive" should {
       "not breathe to produce energy after metabolizing" in { () =>
         val proto = new Proto(
-          initialHealth = 0,
-          maxHealth = 100,
-          recoverySpeed = 1,
-          initialEnergy = 0,
+          _health = new Health(_value=0, maxValue=100, recoverySpeed=1),
+          _energy = 0,
           baseMetabolismCost = 0
         ) {
           def breath = 100
@@ -116,10 +141,8 @@ class ProtoTest extends FixtureWordSpec
 
       "not decrement its energy after metabolizing" in { () =>
         val proto = new Proto(
-          initialHealth = 0,
-          maxHealth = 0,
-          recoverySpeed = 1,
-          initialEnergy = 0,
+          _health = new Health(_value=0, maxValue=0, recoverySpeed=1),
+          _energy = 0,
           baseMetabolismCost = 100
         ) {
           def breath = 100

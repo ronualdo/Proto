@@ -1,17 +1,20 @@
 package proto.domain.entity
 
-class Health(initialValue: Int, maxValue: Int, recoverySpeed: Int) {
-  private var currentValue = initialValue
+class Health(private var _value: Int, maxValue: Int, recoverySpeed: Int) {
 
   def heal() {
-    currentValue = if ( currentValue+recoverySpeed >= maxValue) {
+    _value = if ( _value+recoverySpeed >= maxValue) {
       maxValue
     } else {
-      currentValue+recoverySpeed
+      _value+recoverySpeed
     }
   }
 
-  def value = currentValue
+  def value = _value
+
+  def inflictDamage(damage: Int) {
+    _value -= damage
+  }
 
 
 }

@@ -1,29 +1,22 @@
 package proto.domain.entity
 
 abstract class Proto(
-  initialHealth: Int,
-  maxHealth: Int,
-  recoverySpeed: Int,
-  initialEnergy: Int, 
+  _health: Health,
+  protected var _energy: Int, 
   baseMetabolismCost: Int
 ) {
-  protected var currentEnergy = initialEnergy
 
-  private var currentHealth = initialHealth
-
-  def energy = currentEnergy
+  def energy = _energy
 
   def metabolize() {
     if (isAlive) {
-      if(currentHealth < maxHealth) {
-        currentHealth += recoverySpeed
-      }
-
-      currentEnergy += breath
-      currentEnergy -= metabolismCost
-
-      if(currentEnergy < 0) {
-        currentHealth += currentEnergy
+      _health.heal
+      _energy += breath
+      _energy -= metabolismCost
+      println(_energy)
+      if(_energy < 0) {
+        _health.inflictDamage(-_energy)
+        _energy = 0
       }
     }
   }
@@ -32,8 +25,8 @@ abstract class Proto(
 
   def breath(): Int
 
-  def health = currentHealth
+  def health = _health.value
 
-  def isAlive = currentEnergy > 0
+  def isAlive = _health.value > 0
 
 }
