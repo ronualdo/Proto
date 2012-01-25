@@ -1,21 +1,20 @@
-package proto
+package proto.domain
 
-import org.scalatest.fixture.FixtureWordSpec
-import org.scalatest.mock.{JMockCycleFixture, JMockExpectations}
+import org.scalatest.WordSpec
+import org.scalatest.mock.MockitoSugar
 import org.scalatest.matchers.ShouldMatchers
 
-import proto.domain.World
+import org.mockito.Mockito._
+
+import proto.Renderer
 import proto.domain.entity.Proto
 
-import org.jmock.{Expectations, Mockery}
-
-class WorldTest extends FixtureWordSpec
-    with JMockCycleFixture
-    with ShouldMatchers {
+class WorldTest extends WordSpec
+    with ShouldMatchers
+    with MockitoSugar {
     
   "A world" should {
     "increment his turn by 1 after executing one cycle" in {
-      mockCycle => import mockCycle._
       val world = new World(initialOxigenAmmount=1000, size=(800, 600))
       val initialTurn = world.turn
       world.executeNewCycle
@@ -25,38 +24,28 @@ class WorldTest extends FixtureWordSpec
   }
 
   "render all elements in the world" in {
-    mockCycle => import mockCycle._
-
     val renderer = mock[Renderer]
     val proto1 = mock[Proto]
 
-    expecting { expectation => import expectation._
-      oneOf (renderer).render(proto1)
-    }
+    val world = new World(initialOxigenAmmount=1000, size=(800, 600))
+    world.add(proto1)
+    world.renderUsing(renderer)
 
-    whenExecuting {
-      val world = new World(initialOxigenAmmount=1000, size=(800, 600))
-      world.add(proto1)
-      world.renderUsing(renderer)
-    }
+    verify(renderer).render(proto1)
   }
   
   "make all protos metabolize during a world cycle" in {
-    mockCycle => import mockCycle._
     val proto = mock[Proto]
 
-    expecting { expectation => import expectation._
-      oneOf (proto).metabolize
-    }
+    val world = new World(initialOxigenAmmount=1000, size=(800, 600))
+    world.add(proto)
+    world.executeNewCycle()
 
-    whenExecuting {
-      val world = new World(initialOxigenAmmount=1000, size=(800, 600))
-      world.add(proto)
-      world.executeNewCycle
-    }
+    verify(proto).metabolize()
+
   }
   
-  "extract the same ammount of oxigen passed as parameter when the amount is <= the worlds oxigen" in { () =>
+  "extract the same ammount of oxigen passed as parameter when the amount is <= the worlds oxigen" in {
     val initialOxigenAmmount = 1000
     val world = new World(initialOxigenAmmount, initialCO2Ammount=0, size=(800, 600))
     val oxigenConsumed = 1000
@@ -66,7 +55,7 @@ class WorldTest extends FixtureWordSpec
     world.oxigen should equal (initialOxigenAmmount - oxigenExtracted)
   }
 
-  "extract only the worlds oxigen ammount when the oxigen passed as argument is > the worlds oxigen ammount" in { () =>
+  "extract only the worlds oxigen ammount when the oxigen passed as argument is > the worlds oxigen ammount" in {
     val initialOxigenAmmount = 1000
     val world = new World(initialOxigenAmmount, initialCO2Ammount=0, size=(800, 600))
     val oxigenConsumed = 1200
@@ -76,7 +65,7 @@ class WorldTest extends FixtureWordSpec
     world.oxigen should equal (0)
   }
 
-  "extract the same ammount of co2 passed as parameter when the ammount is <= thw worlds co2" in { () =>
+  "extract the same ammount of co2 passed as parameter when the ammount is <= thw worlds co2" in {
     val initialOxigenAmmount = 1000
     val initialCO2Ammount = 1000
     val world = new World(initialOxigenAmmount, initialCO2Ammount, (800, 600))
@@ -87,7 +76,7 @@ class WorldTest extends FixtureWordSpec
     world.co2 should equal (initialCO2Ammount-co2Consumed)
   }
 
-  "extract only the worlds co2 ammount when the co2 passed as argument is > the worlds co2 ammount" in { () =>
+  "extract only the worlds co2 ammount when the co2 passed as argument is > the worlds co2 ammount" in {
     val initialCO2Ammount = 10
     val world = new World(0, initialCO2Ammount, size=(100, 100))
     val co2Consumed = 100
@@ -97,20 +86,20 @@ class WorldTest extends FixtureWordSpec
     world.co2 should equal (0)
   }
 
-  "not be able to extract negative oxigen ammounts" in { () =>
+  "not be able to extract negative oxigen ammounts" in {
     val initialOxigenAmmount = 1000
     val world = new World(initialOxigenAmmount, size=(800, 600))
 
     evaluating { world.extractOxigen(-1) } should produce[IllegalArgumentException]
   }
 
-  "not be able to extract negative co2 ammounts" in { () =>
+  "not be able to extract negative co2 ammounts" in {
     val world = new World(size=(800, 600))
 
     evaluating { world.extractCO2(-1) } should produce[IllegalArgumentException]
   }
 
-  "be able to increase his oxigen ammount" in { () =>
+  "be able to increase his oxigen ammount" in {
     val initialOxigenAmmount = 1000
     val world = new World(initialOxigenAmmount, 0, (800, 600))
     world.increaseOxigenBy(100)
@@ -118,7 +107,7 @@ class WorldTest extends FixtureWordSpec
     world.oxigen should equal (initialOxigenAmmount+100)
   }
 
-  "not be able to increase his oxigen ammount by a negative ammount" in { () =>
+  "not be able to increase his oxigen ammount by a negative ammount" in {
     val world = new World(size=(800, 600))
 
     evaluating { world.increaseOxigenBy(-1) } should produce[IllegalArgumentException]
