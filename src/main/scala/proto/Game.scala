@@ -6,8 +6,8 @@ import scala.actors.Actor._
 import proto.domain.World
 
 class Game (
-  private val world: World, 
-  private val renderer: Renderer
+  private implicit val world: World,
+  private implicit val renderer: Renderer
 ) 
 {
   private var gameCycleActor: Actor = _

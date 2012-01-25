@@ -1,16 +1,12 @@
 package proto.ui
 
-import java.awt.{Color, GraphicsEnvironment, Dimension}
-
-import scala.swing.RichWindow.Undecorated
-
-import proto.ui.swing.{FullScreenApplication, DirectRenderingFrame}
-import proto.Game
-import proto.domain.World
-import proto.domain.entity.Proto
+import proto.ui.swing.FullScreenApplication
+import proto.Config.gameFrame
+import proto.Config.game
 
 object ProtoApplication extends FullScreenApplication {
-  val gameFrame = new GameFrame
+
+  game.start()
 
   def top = gameFrame
 

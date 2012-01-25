@@ -8,7 +8,7 @@ class DirectRenderingFrame extends MainFrame {
   def renderGraphics(draw: (Graphics2D) => Unit) {
     val context = borderlessGraphicContext
     draw(context)
-    context.dispose
+    context.dispose()
   }
 
   def paintScreen() {

@@ -17,7 +17,7 @@ class GameTest extends WordSpec
       val world = mock[World]
       val renderer = mock[Renderer]
 
-      val game = new Game(world, renderer)
+      val game = new Game()(world, renderer)
       game.start
       Thread.sleep(400)
       game.stop

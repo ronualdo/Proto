@@ -14,8 +14,7 @@ class GameFrame extends DirectRenderingFrame
     with Renderer {
   
   implicit def proto2SwingProto(proto: Proto) = new SwingProto(proto)
-  
-  background = Color.BLACK
+  //background = Color.BLACK
 
   def render(proto: Proto) {
     renderGraphics(proto.drawFunction)
