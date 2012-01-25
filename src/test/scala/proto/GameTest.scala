@@ -1,35 +1,30 @@
 package proto
 
-import org.scalatest.fixture.FixtureWordSpec
-import org.scalatest.mock.{JMockCycleFixture, JMockExpectations}
+import org.scalatest.WordSpec
+import org.scalatest.mock.MockitoSugar
 import org.scalatest.matchers.ShouldMatchers
+
+import org.mockito.Mockito._
 
 import proto.domain.World
 
-import org.jmock.{Expectations, Mockery}
-
-class GameTest extends FixtureWordSpec
-    with JMockCycleFixture
-    with ShouldMatchers {
+class GameTest extends WordSpec
+    with ShouldMatchers
+    with MockitoSugar {
   
   "Game" should { 
     "render, run a new world cycle and show rendered result every 100 milisseconds" in {
-      mockCycle => import mockCycle._
       val world = mock[World]
       val renderer = mock[Renderer]
 
-      expecting { expectation => import expectation._
-        exactly(3).of (world).renderUsing(renderer)
-        exactly(3).of (world).executeNewCycle
-        exactly(3).of (renderer).show
-      }
+      val game = new Game(world, renderer)
+      game.start
+      Thread.sleep(400)
+      game.stop
 
-      whenExecuting {
-        val game = new Game(world, renderer)
-        game.start
-        Thread.sleep(300)
-        game.stop
-      }
+      verify(world, times(3)).renderUsing(renderer)
+      verify(world, times(3)).executeNewCycle
+      verify(renderer, times(3)).show
     }
   }
 }

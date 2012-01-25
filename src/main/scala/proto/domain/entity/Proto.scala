@@ -11,9 +11,10 @@ abstract class Proto(
   def metabolize() {
     if (isAlive) {
       _health.heal
-      _energy += breath
+      val teste = breath()
+      _energy += teste
       _energy -= metabolismCost
-      println(_energy)
+
       if(_energy < 0) {
         _health.inflictDamage(-_energy)
         _energy = 0

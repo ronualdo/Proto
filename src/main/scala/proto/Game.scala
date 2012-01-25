@@ -18,6 +18,7 @@ class Game (
       world.renderUsing (renderer)
       renderer.show
       wait(100)
+
       reactWithin(100) {
         case 'execute => start
         case 'stop => println("quiting")

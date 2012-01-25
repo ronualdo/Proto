@@ -1,78 +1,81 @@
 package proto.domain.entity
 
-import org.scalatest.fixture.FixtureWordSpec
-import org.scalatest.mock.{JMockCycleFixture, JMockExpectations}
+import org.scalatest.WordSpec
+import org.scalatest.mock.MockitoSugar
 import org.scalatest.matchers.ShouldMatchers
 
-import org.jmock.{Expectations, Mockery}
-import org.jmock.Expectations._
+import org.mockito.Mockito._
 
 import proto.domain.World
 
-class AutrotrophicProtoTest extends FixtureWordSpec
-    with JMockCycleFixture
-    with ShouldMatchers {
+class AutrotrophicProtoTest extends WordSpec
+    with ShouldMatchers
+    with MockitoSugar {
 
   "An autrophic proto" should {
     
     "consum world co2 after metabolize" in {
-      mockCycle => import mockCycle._
       
       val world = mock[World]
       val health = mock[Health]
       val co2Cost = 20
-      val proto = new AutotrophicProto(world, health, 10, 10, co2Cost)
+      val proto = new AutotrophicProto(
+        world,
+        health,
+        initialEnergy = 10,
+        baseMetabolismCost = 10,
+        co2Cost = co2Cost
+      )
 
-      expecting { expectation => import expectation._
-        ignoring(health)
-        oneOf (world).extractCO2(co2Cost)
-        allowing(world)
-      }
+      when(health.value) thenReturn (100)
 
-      whenExecuting {
-        proto.metabolize
-      }
+      proto.metabolize()
+
+      verify(world).extractCO2(co2Cost)
+
     }
   }
 
   "generate an O2 ammount relative to the CO2 ammount extracted" in {
-    mockCycle => import mockCycle._
 
     val world = mock[World]
     val health = mock[Health]
     val co2Extracted = 10
-    val proto = new AutotrophicProto(world, health, 10, 10, 20)
+    val proto = new AutotrophicProto(
+      world,
+      health,
+      initialEnergy=10,
+      baseMetabolismCost=10,
+      co2Cost=20
+    )
 
-    expecting { expectation => import expectation._
-      ignoring(health)
-      oneOf (world).extractCO2(20); will(returnValue(co2Extracted))
-      oneOf (world).increaseOxigenBy (co2Extracted)
-    }
+    when(health.value) thenReturn 100
+    when(world.extractCO2(20)) thenReturn(co2Extracted);
 
-    whenExecuting {
-      proto.metabolize
-    }
+    proto.metabolize()
+
+    verify(world).increaseOxigenBy (co2Extracted)
   }
 
   "generate energy in a proportial of 1/6 of the CO2 processed" in {
-    mockCycle => import mockCycle._
 
     val world = mock[World]
     val health = mock[Health]
     val co2Extracted = 20
-    val proto = new AutotrophicProto(world, health, 10, 0, 30)
-    val initialEnergy = proto.energy
+    val proto = new AutotrophicProto(
+      world,
+      health,
+      initialEnergy = 10,
+      baseMetabolismCost = 0,
+      co2Cost = 30
+    )
+    val initialEnergy: Int = proto.energy
     val expectedEnergyProduced = co2Extracted / 6
 
-    expecting { expectation => import expectation._
-      ignoring(health)
-      allowing (world).extractCO2(30); will(returnValue(co2Extracted))
-      allowing (world)
-    }
+    when(health.value) thenReturn(100)
+    when(world.extractCO2(30)) thenReturn(co2Extracted)
 
-    whenExecuting {
-      proto.metabolize
-    }
+    proto.metabolize()
 
     proto.energy should equal (initialEnergy + expectedEnergyProduced)
   }
