@@ -15,8 +15,11 @@ class Game (
   def start() {
     gameCycleActor = actor {
       world.executeNewCycle
+
+      renderer.clearScreen()
       world.renderUsing (renderer)
       renderer.show
+
       wait(100)
 
       reactWithin(100) {

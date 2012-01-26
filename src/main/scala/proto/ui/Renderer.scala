@@ -5,4 +5,6 @@ trait Renderer {
   def render(renderable: Renderable)
 
   def show()
+
+  def clearScreen()
 }

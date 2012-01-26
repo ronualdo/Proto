@@ -16,11 +16,10 @@ def energy = _energy
   def metabolize() {
     if (isAlive) {
       _health.heal
-      val teste = breath()
-      _energy += teste
+      _energy += breath()
       _energy -= metabolismCost
 
-      if(_energy < 0) {
+      if(isStarving) {
         _health.inflictDamage(-_energy)
         _energy = 0
       }
@@ -35,9 +34,11 @@ def energy = _energy
 
   def isAlive = _health.value > 0
 
+  def isStarving = _energy > 0
+
   def drawFunction(context: Graphics2D) {
     context.setPaint(color)
-    context.fill(new Ellipse2D.Double(50, 50, 100, 50))
+    context.fill(new Ellipse2D.Double(50, 50, 25, 50))
   }
   
   private def color = if (isAlive) Color.green else Color.red
