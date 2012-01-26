@@ -1,11 +1,13 @@
-package proto
+package proto.domain
 
 import scala.actors.Actor
 import scala.actors.Actor._
 
+import proto.ui.Renderer
+
 class Game (
-  private val world: World, 
-  private val renderer: Renderer
+  private implicit val world: World,
+  private implicit val renderer: Renderer
 ) 
 {
   private var gameCycleActor: Actor = _
@@ -13,12 +15,16 @@ class Game (
   def start() {
     gameCycleActor = actor {
       world.executeNewCycle
+
+      renderer.clearScreen()
       world.renderUsing (renderer)
       renderer.show
+
       wait(100)
+
       reactWithin(100) {
         case 'execute => start
-        case 'stop => println("quiting")
+        case 'stop => {}
       }
     }
   }
