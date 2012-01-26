@@ -5,7 +5,7 @@ import proto.Config.gameFrame
 import proto.Config.game
 
 object ProtoApplication extends FullScreenApplication {
-
+  println ("executing")
   game.start()
 
   def top = gameFrame

@@ -1,12 +1,17 @@
 package proto.domain.entity
 
-abstract class Proto(
+import proto.ui.Renderable
+import java.awt.{Color, Graphics2D}
+import java.awt.geom.Ellipse2D
+
+
+abstract class Proto (
   _health: Health,
   protected var _energy: Int, 
   baseMetabolismCost: Int
-) {
+) extends Renderable {
 
-  def energy = _energy
+def energy = _energy
 
   def metabolize() {
     if (isAlive) {
@@ -29,5 +34,12 @@ abstract class Proto(
   def health = _health.value
 
   def isAlive = _health.value > 0
+
+  def drawFunction(context: Graphics2D) {
+    context.setPaint(color)
+    context.fill(new Ellipse2D.Double(50, 50, 100, 50))
+  }
+  
+  private def color = if (isAlive) Color.green else Color.red
 
 }

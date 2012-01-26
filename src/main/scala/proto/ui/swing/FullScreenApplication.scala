@@ -20,6 +20,7 @@ abstract class FullScreenApplication
       case e: Exception => shutdown
     }
     mainFrame.visible = true
+    println ("iniciado")
   }
 
   override def shutdown() {

@@ -5,10 +5,11 @@ import scala.swing._
 class DirectRenderingFrame extends MainFrame {
   peer.setIgnoreRepaint(true)
 
-  def renderGraphics(draw: (Graphics2D) => Unit) {
-    val context = borderlessGraphicContext
-    draw(context)
-    context.dispose()
+  def renderGraphics(drawUsing: (Graphics2D) => Unit) {
+    borderlessGraphicContext.map{ context =>
+      drawUsing(context)
+      context.dispose()
+    }
   }
 
   def paintScreen() {
@@ -23,22 +24,23 @@ class DirectRenderingFrame extends MainFrame {
   }
   
   private def borderlessGraphicContext = {
-    val graphicContext = bufferStrategy match {
-      case None => throw new IllegalStateException("BufferStrategy not set")
-      case Some(strategy) => strategy.getDrawGraphics
+    bufferStrategy.map{ (strategy) =>
+      val graphicContext = strategy.getDrawGraphics
+
+      val borderlessGraphicContext = graphicContext.
+        create(peer.getInsets.right, peer.getInsets.top,
+        peer.getWidth - peer.getInsets.left,
+        peer.getHeight - peer.getInsets.bottom)
+
+      graphicContext.dispose()
+
+      borderlessGraphicContext.asInstanceOf[Graphics2D]
     }
-
-    val borderlessGraphicContext = graphicContext
-        .create(peer.getInsets.right, peer.getInsets.top,
-            peer.getWidth - peer.getInsets.left,
-            peer.getHeight - peer.getInsets.bottom)
-    graphicContext.dispose()
-    borderlessGraphicContext.asInstanceOf[Graphics2D]
   }
-
+  
   private def bufferStrategy = peer.getBufferStrategy match {
     case null => None
-    case strategy => Some(peer.getBufferStrategy)
+    case strategy => Some(strategy)
   }
 
 }

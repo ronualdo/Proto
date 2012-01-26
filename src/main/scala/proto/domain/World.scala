@@ -1,16 +1,17 @@
 package proto.domain
 
 import proto.domain.entity.Proto
-import proto.ui.Renderer
 
 import scala.collection.mutable.ArrayBuffer
+import proto.ui.{Renderable, Renderer}
+import java.awt.{Color, Graphics2D}
+
 
 class World(
   initialOxigenAmmount: Int = 0,
   initialCO2Ammount: Int = 0,
   size: Tuple2[Int, Int]
-) 
-{
+) extends Renderable {
   private var oxigenAmmount = initialOxigenAmmount
   private var co2Ammount = initialCO2Ammount
   private var currentTurn = 0
@@ -30,6 +31,7 @@ class World(
   }
 
   def renderUsing(renderer: Renderer) {
+    renderer.render(this)
     elements.foreach (renderer.render(_))
   }
 
@@ -78,6 +80,13 @@ class World(
     co2Ammount += ammount
   }
 
+  def drawFunction(context: Graphics2D) {
+    context.setPaint(Color.blue)
+    context.drawString(this.toString, 10, 10)
+  }
+
+  override def toString = "O2: "+ oxigenAmmount + " CO2: " + co2Ammount
+
   def position(x: Int, y: Int) = {
     val xCoordinate = new Coordinate(x, width)
     val yCoordinate = new Coordinate(y, height)
@@ -108,5 +117,6 @@ class World(
       val newY = yCoordinate-number
       new Position(xCoordinate, newY)
     }
+
   }
 }
