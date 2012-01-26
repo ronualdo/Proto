@@ -1,4 +1,4 @@
-package proto
+package proto.ui
 
 import proto.domain.entity.Proto
 

@@ -1,4 +1,4 @@
-package proto
+package proto.domain
 
 import org.scalatest.WordSpec
 import org.scalatest.mock.MockitoSugar
@@ -6,7 +6,7 @@ import org.scalatest.matchers.ShouldMatchers
 
 import org.mockito.Mockito._
 
-import proto.domain.World
+import proto.ui.Renderer
 
 class GameTest extends WordSpec
     with ShouldMatchers

@@ -1,7 +1,7 @@
 package proto
 
-import domain.entity.AutotrophicProto
 import domain.World
+import domain.Game
 import ui.GameFrame
 
 object Config {

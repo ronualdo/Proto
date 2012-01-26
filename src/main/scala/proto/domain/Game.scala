@@ -1,9 +1,9 @@
-package proto
+package proto.domain
 
 import scala.actors.Actor
 import scala.actors.Actor._
 
-import proto.domain.World
+import proto.ui.Renderer
 
 class Game (
   private implicit val world: World,
@@ -21,7 +21,7 @@ class Game (
 
       reactWithin(100) {
         case 'execute => start
-        case 'stop => println("quiting")
+        case 'stop => {}
       }
     }
   }

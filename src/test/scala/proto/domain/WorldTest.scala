@@ -6,7 +6,7 @@ import org.scalatest.matchers.ShouldMatchers
 
 import org.mockito.Mockito._
 
-import proto.Renderer
+import proto.ui.Renderer
 import proto.domain.entity.Proto
 
 class WorldTest extends WordSpec

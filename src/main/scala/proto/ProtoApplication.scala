@@ -1,4 +1,4 @@
-package proto.ui
+package proto
 
 import proto.ui.swing.FullScreenApplication
 import proto.Config.gameFrame
