@@ -34,7 +34,7 @@ def energy = _energy
 
   def isAlive = _health.value > 0
 
-  def isStarving = _energy > 0
+  def isStarving = _energy < 0
 
   def drawFunction(context: Graphics2D) {
     context.setPaint(color)
